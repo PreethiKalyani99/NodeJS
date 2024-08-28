@@ -2,17 +2,14 @@ const net = require("net");
 
 const server = net.createServer((socket) => {
     socket.on("data", (data) => {
-        const request = data.toString();
-        // console.log(request, "request")
-        if (request.includes('/echo/abc ')) {
-          const httpResponse = 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 6\r\n\r\nabcdja';
-          socket.write(httpResponse);
-        } 
-        else {
-            const httpResponse = 'HTTP/1.1 404 Not Found\r\n\r\n';
-            socket.write(httpResponse);
+        const url = data.toString()
+        // console.log(url, "url")
+        if(url.includes("/echo/")){
+            const content = url.split(' ')[1].slice(6);
+            socket.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`);
+        }else{
+            socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
         }
-        socket.end();
   });
 });
 
